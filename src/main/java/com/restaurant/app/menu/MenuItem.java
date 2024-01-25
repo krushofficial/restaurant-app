@@ -12,6 +12,9 @@ public class MenuItem {
     String id;
 
     @Column(nullable = false, length = 64)
+    String category;
+
+    @Column(nullable = false, length = 64)
     String niceName;
     @Column(nullable = false, length = 128)
     String description;

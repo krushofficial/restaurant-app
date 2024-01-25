@@ -18,14 +18,18 @@ public class MenuController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<List<MenuItem>> getMenu() {
-        return ResponseEntity.ok(menuRepository.findAll());
+    public ResponseEntity<List<MenuItem>> getMenu(@RequestParam Optional<String> category) {
+        return category.map(s -> ResponseEntity.ok(menuRepository.findAllByCategory(s))).orElseGet(() -> ResponseEntity.ok(menuRepository.findAll()));
     }
 
     @Value public static class AddRequest {
         @NotNull
         @Size(min = 1, max = 64)
         String id;
+
+        @NotNull
+        @Size(min = 1, max = 64)
+        String category;
 
         @NotNull
         @Size(min = 1, max = 64)
@@ -47,6 +51,7 @@ public class MenuController {
     public ResponseEntity<Void> addMenuItem(@RequestBody @Valid AddRequest body) {
         MenuItem item = MenuItem.builder()
                 .id(body.id)
+                .category(body.category)
                 .niceName(body.niceName)
                 .description(body.description)
                 .price(body.price)
@@ -59,6 +64,10 @@ public class MenuController {
     }
 
     @Value public static class ModifyRequest {
+        @NotNull
+        @Size(min = 1, max = 64)
+        String category;
+
         @NotNull
         @Size(min = 1, max = 64)
         String niceName;
@@ -84,6 +93,7 @@ public class MenuController {
         MenuItem oldItem = _oldItem.get();
 
         MenuItem item = oldItem.toBuilder()
+                .category(body.category)
                 .niceName(body.niceName)
                 .description(body.description)
                 .price(body.price)
