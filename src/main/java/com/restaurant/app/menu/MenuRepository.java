@@ -8,4 +8,5 @@ import java.util.List;
 @Repository
 public interface MenuRepository extends ListCrudRepository<MenuItem, String> {
     List<MenuItem> findAllByCategory(String category);
+    void deleteAllByCategory(String category);
 }

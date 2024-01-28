@@ -1,5 +1,6 @@
 package com.restaurant.app.menu;
 
+import jakarta.transaction.*;
 import jakarta.validation.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -114,6 +115,29 @@ public class MenuController {
         }
 
         menuRepository.deleteById(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Data public static class CategoryRenameRequest {
+        @NotNull
+        @Size(min = 1, max = 64)
+        String newName;
+    }
+
+    @PostMapping("/category/rename/{id}")
+    public ResponseEntity<Void> renameCategory(@PathVariable String id, @RequestBody @Valid CategoryRenameRequest body) {
+        for (MenuItem item : menuRepository.findAllByCategory(id)) {
+            item.category = body.newName;
+            menuRepository.save(item);
+        }
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @DeleteMapping("/category/delete/{id}") @Transactional
+    public ResponseEntity<Void> deleteCategory(@PathVariable String id) {
+        menuRepository.deleteAllByCategory(id);
+
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

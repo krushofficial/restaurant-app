@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface SessionRepository extends CrudRepository<Session, String> {
-    Integer deleteAllByUserEmail(String userEmail);
+    void deleteAllByUserEmail(String userEmail);
 }
